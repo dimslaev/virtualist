@@ -1,0 +1,33 @@
+{
+  "name": "@dims/virtualist",
+  "version": "0.0.1",
+  "description": "Virtual list",
+  "source": "src/useVirtualList.js",
+  "main": "dist/virtualist.js",
+  "scripts": {
+    "start": "parcel ./src/index.html",
+    "clean": "rm -rf dist && rm -rf .parcel-cache",
+    "build": "npm run clean && parcel build --no-source-maps",
+    "test": "tape ./src/**/*.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dimslaev/virtualist.git"
+  },
+  "author": "Dimitar Slaev <dimslaev@gmail.com>",
+  "license": "ISC",
+  "homepage": "https://github.com/dimslaev/virtualist",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.5.0",
+    "parcel": "^2.5.0",
+    "process": "^0.11.10",
+    "tape": "^5.5.3"
+  },
+  "dependencies": {
+    "@dims/smooth-scroll-to": "0.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "resize-observer": "^1.0.4",
+    "sass": "^1.26.5"
+  }
+}
