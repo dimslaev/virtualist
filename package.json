@@ -1,12 +1,20 @@
 {
   "name": "@dims/virtualist",
   "version": "0.0.1",
-  "description": "Virtual list",
-  "source": "./src/useVirtualist.js",
+  "description": "Simple, performant and cross-browser virtual list.",
+  "tags": [
+    "virtual list",
+    "infinite list",
+    "contentVisibility",
+    "react virtual list",
+    "react window",
+    "react list performance"
+  ],
+  "source": "./src/lib/useVirtualist.js",
   "main": "./dist/useVirtualist.js",
   "type": "module",
   "scripts": {
-    "start": "parcel ./src/index.html",
+    "start": "parcel ./src/example/index.html",
     "clean": "rm -rf dist && rm -rf .parcel-cache",
     "build": "npm run clean && parcel build --no-source-maps",
     "test": "jest"
