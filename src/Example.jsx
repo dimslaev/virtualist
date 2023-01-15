@@ -1,115 +1,52 @@
-import React, { useRef, forwardRef, useState } from "react";
-import data from "../MOCK_DATA.json";
+import React, { useState } from "react";
+import { useVirtualist } from "./useVirtualist";
+import data from "./mock_data.json";
 import "./style.scss";
 
 export const Example = () => {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const loadMore = () => {
+    setLoading(true);
+    fetchData(pageIndex).then((newItems) => {
+      setItems([...items, ...newItems]);
+      setPageIndex(pageIndex + 1);
+      setLoading(false);
+    });
+  };
+
+  const onScroll = (e) => {
+    console.log("scroll", e);
+  };
+
+  const { listRef, inView } = useVirtualist({
+    items,
+    loadMore,
+    loading,
+    onScroll,
+  });
+
   return (
     <main>
       <div className="list-wrapper">
-        <List items={data} visibleCount={20} />
+        <div>Loading: {String(loading)}</div>
+        <ul className="list" ref={listRef}>
+          {items.map((it, index) => {
+            return (
+              <ListItem key={it.id} inView={inView.includes(index)} data={it} />
+            );
+          })}
+        </ul>
       </div>
     </main>
   );
 };
 
-const getChunkTotalHeight = (heights) => {
-  let result = 0;
-  heights.forEach((height) => {
-    result += height;
-  });
-  return result;
-};
-
-export const List = forwardRef(({ items, visibleCount }, ref) => {
-  const listRef = useRef(null);
-  const spacerTopRef = useRef(null);
-  const spacerBottomRef = useRef(null);
-  const visibleItemsHeightsRef = useRef([]);
-
-  const lastScrollPosition = useRef(0);
-
-  const [chunkIndex, setChunkIndex] = useState(1);
-
-  const [visibleItems, setVisibleItems] = useState(
-    items.filter((_, index) => index < visibleCount)
-  );
-
-  console.log("visibleItemsHeightsRef", visibleItemsHeightsRef.current);
-
-  const onScroll = (e) => {
-    const list = e.target;
-    const chunkHeight = getChunkTotalHeight(
-      visibleItemsHeightsRef.current.filter(
-        (_, i) => i < chunkIndex * visibleCount
-      )
-    );
-
-    console.log("chunkHeight", chunkHeight);
-
-    // scrolling down
-    if (list.scrollTop > lastScrollPosition.current) {
-      console.log("scrolling down");
-      console.log(
-        "list.scrollTop + list.offsetHeight",
-        list.scrollTop + list.offsetHeight
-      );
-
-      if (
-        list.scrollTop + list.offsetHeight >= chunkHeight &&
-        spacerTopRef.current.offsetHeight !== chunkHeight
-      ) {
-        console.log(
-          "spacerTopRef.offsetHeight",
-          spacerTopRef.current.offsetHeight
-        );
-
-        const newChunkIndex = chunkIndex + 1;
-
-        spacerTopRef.current.style.height = chunkHeight + "px";
-
-        setVisibleItems(
-          items.filter(
-            (_, index) =>
-              index > chunkIndex * visibleCount &&
-              index < newChunkIndex * visibleCount
-          )
-        );
-
-        setChunkIndex(newChunkIndex);
-
-        list.scrollTop = chunkHeight;
-      }
-    } // scrolling up
-    else {
-      console.log("scrolling up", list.scrollTop);
-    }
-    lastScrollPosition.current = list.scrollTop;
-  };
-
-  return (
-    <ul className="list" ref={listRef} onScroll={onScroll}>
-      <li ref={spacerTopRef}></li>
-      {visibleItems.map((item, i) => {
-        return (
-          <ListItem
-            {...item}
-            key={`item-${i}`}
-            ref={(node) => {
-              if (node) {
-                visibleItemsHeightsRef.current.push(node.offsetHeight);
-              }
-            }}
-          />
-        );
-      })}
-      <li ref={spacerBottomRef}></li>
-    </ul>
-  );
-});
-
-export const ListItem = forwardRef(
-  (
-    {
+export const ListItem = (props) => {
+  const {
+    data: {
       id,
       first_name: firstName,
       last_name: lastName,
@@ -117,10 +54,20 @@ export const ListItem = forwardRef(
       gender,
       description,
     },
-    ref
-  ) => {
-    return (
-      <li className="list__item" ref={ref}>
+    inView,
+  } = props;
+
+  return (
+    <li
+      className="list__item"
+      style={{
+        height: inView ? "auto" : "50px",
+      }}
+    >
+      <div
+        className="list__item__content"
+        style={{ display: inView ? "flex" : "none" }}
+      >
         <span className="list__item__column list__item__column--id">{id}</span>
         <span className="list__item__column list__item__column--first-name">
           {firstName}
@@ -137,9 +84,19 @@ export const ListItem = forwardRef(
         <span className="list__item__column list__item__column--description">
           {description}
         </span>
-      </li>
-    );
-  }
-);
+      </div>
+    </li>
+  );
+};
+
+// Fake fetch method
+export const fetchData = (pageIndex, pageSize = 20) =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(
+        data.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize)
+      );
+    }, 500);
+  });
 
 export default Example;
