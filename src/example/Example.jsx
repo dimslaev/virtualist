@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useVirtualist } from "./useVirtualist";
+import { useVirtualist } from "../lib/useVirtualist";
 import data from "./mock_data.json";
 import "./style.scss";
 
