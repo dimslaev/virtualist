@@ -1,4 +1,4 @@
-## Virtualist
+# Virtualist
 
 Simple and performant virtual list that imitates CSS contentVisibility
 
@@ -8,6 +8,7 @@ Simple and performant virtual list that imitates CSS contentVisibility
 
 ### TODO
 
+- benchmarks
 - typescript and eslint
 - extend examples
 - add tests
