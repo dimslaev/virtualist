@@ -1,6 +1,6 @@
 # Virtualist
 
-Simple, performant and cross-browser virtual list inspired from [https://web.dev/content-visibility/](CSS contentVisibility).
+Simple, performant and cross-browser virtual list inspired from [CSS contentVisibility](https://web.dev/content-visibility/).
 
 - Perfect for rows with dynamic heights
 - Supports infinite loading out-of-the-box
