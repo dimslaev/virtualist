@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { throttle } from "../throttle";
+import { throttle } from "./throttle";
 import { useIsInitialRender } from "./useIsInitialRender";
 
 export const useVirtualist = ({
