@@ -1,62 +1,65 @@
 import { useEffect, useRef, useState } from "react";
 import { throttle } from "./throttle";
-import { useIsInitialRender } from "./useIsInitialRender";
 
 export const useVirtualist = ({
   items,
+  listHeight = 500,
   loadMore,
-  onScroll,
+  onScroll: onScrollCb,
+  scrollThrottle = 200, // ms
   loading,
-  loadMoreWhenCount = 5,
-  trottleDelay = 400,
+  loadBeforeIndex = 5,
+  renderOffset = 400, // px
 }) => {
   const listRef = useRef(null);
   const [inView, setInView] = useState([]);
 
-  isInitialRender = useIsInitialRender();
-
   useEffect(() => {
-    if (isInitialRender && typeof loadMore === "function") {
-      loadMore();
+    if (!listRef.current || !items.length) return;
+
+    const list = listRef.current;
+    const listRect = list.getBoundingClientRect();
+    const listItems = list.childNodes;
+
+    // Apply list styles
+    list.style.overflow = "auto";
+    list.style.webkitOverflowScrolling = "touch";
+    if (typeof listHeight === "number") {
+      list.style.height = listHeight + "px";
     }
 
-    if (!listRef.current || !items.length || loading) return;
-
-    const listRect = listRef.current.getBoundingClientRect();
-
-    const onScrollList = throttle((e) => {
+    const onScroll = throttle((e) => {
       const arr = [...inView];
 
-      listRef.current.childNodes.forEach((childNode, childNodeIndex) => {
-        const rect = childNode.getBoundingClientRect();
-
+      listItems.forEach((node, index) => {
         if (
-          rect.top - listRect.bottom <= listRect.bottom &&
-          !inView.includes(childNodeIndex)
+          node.getBoundingClientRect().top - renderOffset <= listRect.bottom &&
+          !inView.includes(index)
         ) {
-          arr.push(childNodeIndex);
+          arr.push(index);
         }
       });
 
       setInView(arr);
 
       if (
+        // !loading &&
         typeof loadMore === "function" &&
-        arr.includes(listRef.current.childNodes.length - loadMoreWhenCount)
+        arr.includes(listItems.length - loadBeforeIndex)
       ) {
         loadMore();
       }
 
-      if (typeof onScroll === "function" && e) {
-        onScroll(e);
+      if (typeof onScrollCb === "function") {
+        onScrollCb(e);
       }
-    }, trottleDelay);
+    }, scrollThrottle);
 
-    listRef.current.addEventListener("scroll", onScrollList);
-    listRef.current.dispatchEvent(new Event("scroll"));
+    list.addEventListener("scroll", onScroll);
+    list.dispatchEvent(new Event("scroll"));
 
     return () => {
-      listRef.current.removeEventListener("scroll", onScrollList);
+      list.removeEventListener("scroll", onScroll);
     };
   }, [items]);
 

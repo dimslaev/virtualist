@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useVirtualist } from "../lib/useVirtualist";
 import data from "./mock_data.json";
 import "./style.scss";
@@ -16,6 +16,10 @@ export const Example = () => {
       setLoading(false);
     });
   };
+
+  useEffect(() => {
+    loadMore();
+  }, []);
 
   const onScroll = (e) => {
     console.log("scroll", e);
