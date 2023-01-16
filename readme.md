@@ -9,7 +9,7 @@ Simple, performant and cross-browser virtual list inspired from [CSS contentVisi
 ### TODO
 
 - benchmarks
-- typescript and eslint
+- eslint
 - extend examples
 - add tests
 - readme documentation

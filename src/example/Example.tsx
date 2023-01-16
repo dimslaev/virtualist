@@ -1,17 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useVirtualist } from "../lib/useVirtualist";
+import { onScrollCallbackParams } from "../lib/virtualist";
 import data from "./mock_data.json";
 import "./style.scss";
 
+type Record = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  gender: string;
+  description: string;
+};
+
 export const Example = () => {
   const [pageIndex, setPageIndex] = useState(0);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<Record[]>([]);
   const [loading, setLoading] = useState(false);
 
   const loadMore = () => {
     setLoading(true);
     fetchData(pageIndex).then((newItems) => {
-      setItems([...items, ...newItems]);
+      setItems([...items, ...(newItems as Record[])]);
       setPageIndex(pageIndex + 1);
       setLoading(false);
     });
@@ -21,15 +31,13 @@ export const Example = () => {
     loadMore();
   }, []);
 
-  const onScroll = (e) => {
-    console.log("scroll", e);
+  const onScroll = (params: onScrollCallbackParams) => {
+    console.log("scroll", params);
   };
 
-  const { listRef, inView } = useVirtualist({
+  const { listRef, inViewItemIndices } = useVirtualist<Record>({
     items,
     loadMore,
-    loading,
-    setLoading,
     onScroll,
   });
 
@@ -40,7 +48,11 @@ export const Example = () => {
         <ul className="list" ref={listRef}>
           {items.map((it, index) => {
             return (
-              <ListItem key={it.id} inView={inView.includes(index)} data={it} />
+              <ListItem
+                key={it.id}
+                inView={inViewItemIndices.includes(index)}
+                data={it}
+              />
             );
           })}
         </ul>
@@ -49,19 +61,20 @@ export const Example = () => {
   );
 };
 
-export const ListItem = (props) => {
-  const {
-    data: {
-      id,
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      gender,
-      description,
-    },
-    inView,
-  } = props;
-
+export const ListItem = ({
+  data: {
+    id,
+    first_name: firstName,
+    last_name: lastName,
+    email,
+    gender,
+    description,
+  },
+  inView,
+}: {
+  data: Record;
+  inView: boolean;
+}) => {
   return (
     <li
       className="list__item"
@@ -95,7 +108,7 @@ export const ListItem = (props) => {
 };
 
 // Fake fetch method
-export const fetchData = (pageIndex, pageSize = 20) =>
+export const fetchData = (pageIndex: number, pageSize = 20) =>
   new Promise((resolve) => {
     setTimeout(() => {
       resolve(

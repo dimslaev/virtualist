@@ -1,20 +1,21 @@
 import { useEffect, useRef, useState } from "react";
+import { Options, Return, ScrollDirection } from "./virtualist";
 
-export const useVirtualist = ({
+export const useVirtualist = <Item>({
   items,
   listHeight = 500,
   loadMore,
   onScroll: onScrollCb,
-  scrollThrottle = 50, // ms
+  scrollThrottle = 50,
   loadBeforeIndex = 15,
-  renderOffset = 400, // px
-}) => {
-  const listRef = useRef(null);
-  const scrollTimer = useRef(null);
+  renderOffset = 400,
+}: Options<Item>): Return => {
+  const listRef = useRef<HTMLUListElement>(null);
+  const scrollTimer = useRef<ReturnType<typeof setTimeout>>(0);
   const isInitialLoad = useRef(true);
   const lastScrollTop = useRef(0);
 
-  const [inView, setInView] = useState([]);
+  const [inViewItemIndices, setInViewItemIndices] = useState<number[]>([]);
 
   useEffect(() => {
     if (!listRef.current || !items.length) return;
@@ -25,31 +26,41 @@ export const useVirtualist = ({
 
     // Apply list styles
     list.style.overflow = "auto";
-    list.style.webkitOverflowScrolling = "touch";
+    list.style.margin = "0px";
+    list.style.padding = "0px";
     if (typeof listHeight === "number") {
       list.style.height = listHeight + "px";
     }
 
-    const revealItems = () => {
-      const arr = [...inView];
+    const renderItems = () => {
+      const arr = [...inViewItemIndices];
 
       listItems.forEach((node, index) => {
         if (
+          // @ts-ignore
           node.getBoundingClientRect().top - renderOffset <= listRect.bottom &&
-          !inView.includes(index)
+          !inViewItemIndices.includes(index)
         ) {
           arr.push(index);
         }
       });
 
-      setInView(arr);
+      setInViewItemIndices(arr);
 
       return arr;
     };
 
-    const onScrollEnd = (direction) => {
-      if (direction == "down") {
-        const arr = revealItems();
+    const getScrollDirection = (e: Event): ScrollDirection => {
+      const target = e.currentTarget as HTMLElement;
+      const direction =
+        target.scrollTop > lastScrollTop.current ? "down" : "up";
+      lastScrollTop.current = target.scrollTop;
+      return direction;
+    };
+
+    const onScrollEnd = (direction: ScrollDirection) => {
+      if (direction === "down") {
+        const arr = renderItems();
 
         if (
           typeof loadMore === "function" &&
@@ -64,10 +75,8 @@ export const useVirtualist = ({
       }
     };
 
-    const onScroll = (e) => {
-      const direction =
-        e.target.scrollTop > lastScrollTop.current ? "down" : "up";
-      lastScrollTop.current = e.target.scrollTop;
+    const onScroll = (e: Event): void => {
+      const direction = getScrollDirection(e);
 
       if (scrollTimer.current) {
         clearTimeout(scrollTimer.current);
@@ -79,7 +88,7 @@ export const useVirtualist = ({
     };
 
     if (isInitialLoad.current) {
-      revealItems();
+      renderItems();
       isInitialLoad.current = false;
     }
 
@@ -92,6 +101,6 @@ export const useVirtualist = ({
 
   return {
     listRef,
-    inView,
+    inViewItemIndices,
   };
 };
