@@ -29,6 +29,7 @@ export const Example = () => {
     items,
     loadMore,
     loading,
+    setLoading,
     onScroll,
   });
 

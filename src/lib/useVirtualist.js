@@ -6,13 +6,15 @@ export const useVirtualist = ({
   listHeight = 500,
   loadMore,
   onScroll: onScrollCb,
-  scrollThrottle = 200, // ms
-  loading,
-  loadBeforeIndex = 5,
+  scrollThrottle = 50, // ms
+  loadBeforeIndex = 15,
   renderOffset = 400, // px
 }) => {
   const listRef = useRef(null);
   const [inView, setInView] = useState([]);
+
+  const timer = useRef(null);
+  const initialLoad = useRef(true);
 
   useEffect(() => {
     if (!listRef.current || !items.length) return;
@@ -28,7 +30,7 @@ export const useVirtualist = ({
       list.style.height = listHeight + "px";
     }
 
-    const onScroll = throttle((e) => {
+    const revealItems = () => {
       const arr = [...inView];
 
       listItems.forEach((node, index) => {
@@ -42,8 +44,13 @@ export const useVirtualist = ({
 
       setInView(arr);
 
+      return arr;
+    };
+
+    const onScroll = (e) => {
+      const arr = revealItems();
+
       if (
-        // !loading &&
         typeof loadMore === "function" &&
         arr.includes(listItems.length - loadBeforeIndex)
       ) {
@@ -53,13 +60,26 @@ export const useVirtualist = ({
       if (typeof onScrollCb === "function") {
         onScrollCb(e);
       }
-    }, scrollThrottle);
+    };
 
-    list.addEventListener("scroll", onScroll);
-    list.dispatchEvent(new Event("scroll"));
+    const onScrollEnd = (e) => {
+      if (timer.current) {
+        clearTimeout(timer.current);
+      }
+      timer.current = setTimeout(() => {
+        onScroll(e);
+      }, scrollThrottle);
+    };
+
+    if (initialLoad.current) {
+      revealItems();
+      initialLoad.current = false;
+    }
+
+    list.addEventListener("scroll", onScrollEnd);
 
     return () => {
-      list.removeEventListener("scroll", onScroll);
+      list.removeEventListener("scroll", onScrollEnd);
     };
   }, [items]);
 
