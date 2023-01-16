@@ -14,10 +14,9 @@
   "main": "./dist/useVirtualist.js",
   "type": "module",
   "scripts": {
-    "start": "parcel ./src/example/index.html",
+    "start": "parcel ./example/index.html",
     "clean": "rm -rf dist && rm -rf .parcel-cache",
-    "build": "npm run clean && parcel build --no-source-maps",
-    "test": "jest"
+    "build": "npm run clean && parcel build --no-source-maps"
   },
   "repository": {
     "type": "git",

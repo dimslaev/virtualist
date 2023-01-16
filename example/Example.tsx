@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useVirtualist } from "../lib/useVirtualist";
-import { onScrollCallbackParams } from "../lib/virtualist";
+import { useVirtualist } from "../src/useVirtualist";
+import { onScrollCallbackParams } from "../src/virtualist";
 import data from "./mock_data.json";
 import "./style.scss";
 
