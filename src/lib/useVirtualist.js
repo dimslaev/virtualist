@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { throttle } from "./throttle";
 
 export const useVirtualist = ({
   items,
@@ -11,10 +10,11 @@ export const useVirtualist = ({
   renderOffset = 400, // px
 }) => {
   const listRef = useRef(null);
-  const [inView, setInView] = useState([]);
+  const scrollTimer = useRef(null);
+  const isInitialLoad = useRef(true);
+  const lastScrollTop = useRef(0);
 
-  const timer = useRef(null);
-  const initialLoad = useRef(true);
+  const [inView, setInView] = useState([]);
 
   useEffect(() => {
     if (!listRef.current || !items.length) return;
@@ -47,39 +47,46 @@ export const useVirtualist = ({
       return arr;
     };
 
-    const onScroll = (e) => {
-      const arr = revealItems();
+    const onScrollEnd = (direction) => {
+      if (direction == "down") {
+        const arr = revealItems();
 
-      if (
-        typeof loadMore === "function" &&
-        arr.includes(listItems.length - loadBeforeIndex)
-      ) {
-        loadMore();
+        if (
+          typeof loadMore === "function" &&
+          arr.includes(listItems.length - loadBeforeIndex)
+        ) {
+          loadMore();
+        }
       }
 
       if (typeof onScrollCb === "function") {
-        onScrollCb(e);
+        onScrollCb({ direction, scrollTop: list.scrollTop });
       }
     };
 
-    const onScrollEnd = (e) => {
-      if (timer.current) {
-        clearTimeout(timer.current);
+    const onScroll = (e) => {
+      const direction =
+        e.target.scrollTop > lastScrollTop.current ? "down" : "up";
+      lastScrollTop.current = e.target.scrollTop;
+
+      if (scrollTimer.current) {
+        clearTimeout(scrollTimer.current);
       }
-      timer.current = setTimeout(() => {
-        onScroll(e);
+
+      scrollTimer.current = setTimeout(() => {
+        onScrollEnd(direction);
       }, scrollThrottle);
     };
 
-    if (initialLoad.current) {
+    if (isInitialLoad.current) {
       revealItems();
-      initialLoad.current = false;
+      isInitialLoad.current = false;
     }
 
-    list.addEventListener("scroll", onScrollEnd);
+    list.addEventListener("scroll", onScroll);
 
     return () => {
-      list.removeEventListener("scroll", onScrollEnd);
+      list.removeEventListener("scroll", onScroll);
     };
   }, [items]);
 
