@@ -18,6 +18,12 @@ main {
   padding: 4rem 0;
 }
 
+h1 {
+  font-size: 1.15rem;
+  letter-spacing: 0.085rem;
+  text-transform: uppercase;
+}
+
 .list {
   border: 1px solid $color-foreground;
   padding: 0;
@@ -27,23 +33,33 @@ main {
     &__content {
       display: flex;
       align-items: center;
-      padding: 16px 0;
+      padding: 16px;
     }
 
     &__column {
       padding: 0 16px;
-      flex: 0 0 15%;
-      min-width: 15%;
-      max-width: 15%;
+      flex: 0 0 10%;
+      min-width: 10%;
+      max-width: 10%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
 
-      &--description {
-        flex: 0 0 40%;
-        min-width: 40%;
-        max-width: 40%;
+      &--id {
+        flex: 0 0 7%;
+        min-width: 7%;
+        max-width: 7%;
+      }
 
+      &--email {
+        flex: 0 0 20%;
+        min-width: 20%;
+        max-width: 20%;
+      }
+
+      &--description {
+        flex-grow: 1;
+        max-width: unset;
         white-space: unset;
       }
     }

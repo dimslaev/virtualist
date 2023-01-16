@@ -43,8 +43,9 @@ export const Example = () => {
 
   return (
     <main>
+      <h1>Virtualist</h1>
       <div className="list-wrapper">
-        <div>Loading: {String(loading)}</div>
+        <p>Loading: {String(loading)}</p>
         <ul className="list" ref={listRef}>
           {items.map((it, index) => {
             return (

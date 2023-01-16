@@ -25,7 +25,8 @@ export const useVirtualist = <Item>({
     const listItems = list.childNodes;
 
     // Apply list styles
-    list.style.overflow = "auto";
+    list.style.overflowX = "hidden";
+    list.style.overflowY = "auto";
     list.style.margin = "0px";
     list.style.padding = "0px";
     if (typeof listHeight === "number") {
