@@ -13,7 +13,7 @@ export const useVirtualist = <Item>({
   const isInitialLoad = useRef(true);
   const lastScrollTop = useRef(0);
 
-  const [inViewIndices, setinViewIndices] = useState<number[]>([]);
+  const [renderedIndices, setRenderedIndices] = useState<number[]>([]);
 
   useEffect(() => {
     if (!listRef.current || !items.length) return;
@@ -32,21 +32,21 @@ export const useVirtualist = <Item>({
     }
 
     const renderItems = () => {
-      const newInViewIndices = [...inViewIndices];
+      const newRenderedIndices = [...renderedIndices];
 
       listItems.forEach((node, index) => {
         if (
           // @ts-ignore
           node.getBoundingClientRect().top - renderOffset <= listRect.bottom &&
-          !inViewIndices.includes(index)
+          !renderedIndices.includes(index)
         ) {
-          newInViewIndices.push(index);
+          newRenderedIndices.push(index);
         }
       });
 
-      setinViewIndices(newInViewIndices);
+      setRenderedIndices(newRenderedIndices);
 
-      return newInViewIndices;
+      return newRenderedIndices;
     };
 
     const getScrollDirection = (e: Event): ScrollDirection => {
@@ -58,15 +58,15 @@ export const useVirtualist = <Item>({
     };
 
     const onScrollEnd = (originalEvent: Event, direction: ScrollDirection) => {
-      const newInViewIndices =
-        direction === "down" ? renderItems() : inViewIndices;
+      const newRenderedIndices =
+        direction === "down" ? renderItems() : renderedIndices;
 
       if (typeof onScrollCb === "function") {
         onScrollCb({
           originalEvent,
           direction,
           scrollTop: list.scrollTop,
-          inViewIndices: newInViewIndices,
+          renderedIndices: newRenderedIndices,
         });
       }
     };
@@ -97,6 +97,6 @@ export const useVirtualist = <Item>({
 
   return {
     listRef,
-    inViewIndices,
+    renderedIndices,
   };
 };

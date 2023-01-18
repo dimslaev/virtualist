@@ -30,7 +30,7 @@ h1 {
   border-top: 1px solid #74838c;
 }
 
-.item-row {
+.item {
   display: flex;
   align-items: center;
   padding: 16px;

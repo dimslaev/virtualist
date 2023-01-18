@@ -3,7 +3,7 @@ export type ScrollDirection = "up" | "down";
 export type onScrollCallbackParams = {
   direction: ScrollDirection;
   scrollTop: number;
-  inViewIndices: number[];
+  renderedIndices: number[];
   originalEvent: Event;
 };
 
@@ -17,5 +17,5 @@ export interface Options<T> {
 
 export interface Return {
   listRef: React.RefObject<HTMLUListElement>;
-  inViewIndices: number[];
+  renderedIndices: number[];
 }

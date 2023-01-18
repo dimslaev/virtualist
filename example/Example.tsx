@@ -28,12 +28,12 @@ export const Example = () => {
   };
 
   const onScroll = (params: onScrollCallbackParams) => {
-    if (params.inViewIndices.length === items.length) {
+    if (params.renderedIndices.length === items.length) {
       loadMore();
     }
   };
 
-  const { listRef, inViewIndices } = useVirtualist<Record>({
+  const { listRef, renderedIndices } = useVirtualist<Record>({
     items,
     onScroll,
   });
@@ -47,49 +47,43 @@ export const Example = () => {
       <h1>Virtualist</h1>
       <p>Loading: {String(loading)}</p>
       <ul className="list" ref={listRef}>
-        {items.map((it, index) => {
-          return (
-            <ListItem
-              key={it.id}
-              inView={inViewIndices.includes(index)}
-              data={it}
-            />
-          );
-        })}
+        {items.map((it, index) =>
+          renderedIndices.includes(index) ? (
+            <ListItem {...it} key={it.id} />
+          ) : (
+            <ListItemPlaceholder key={it.id} />
+          )
+        )}
       </ul>
     </main>
   );
 };
 
+export const ListItemPlaceholder = () => (
+  <li
+    className="item"
+    style={{
+      height: 50,
+    }}
+  ></li>
+);
+
 export const ListItem = ({
-  data: {
-    id,
-    first_name: firstName,
-    last_name: lastName,
-    email,
-    gender,
-    description,
-  },
-  inView,
-}: {
-  data: Record;
-  inView: boolean;
-}) => {
+  id,
+  first_name: firstName,
+  last_name: lastName,
+  email,
+  gender,
+  description,
+}: Record) => {
   return (
-    <li
-      className="item"
-      style={{
-        height: inView ? "auto" : "50px",
-      }}
-    >
-      <div className="item-row" style={{ display: inView ? "flex" : "none" }}>
-        <span className="item-col id">{id}</span>
-        <span className="item-col first-name">{firstName}</span>
-        <span className="item-col last-name">{lastName}</span>
-        <span className="item-col email">{email}</span>
-        <span className="item-col gender">{gender}</span>
-        <span className="item-col description">{description}</span>
-      </div>
+    <li className="item">
+      <span className="item-col id">{id}</span>
+      <span className="item-col first-name">{firstName}</span>
+      <span className="item-col last-name">{lastName}</span>
+      <span className="item-col email">{email}</span>
+      <span className="item-col gender">{gender}</span>
+      <span className="item-col description">{description}</span>
     </li>
   );
 };
