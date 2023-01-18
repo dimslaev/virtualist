@@ -25,7 +25,7 @@
     "lint": "eslint src/**/*.ts example/**/*.tsx",
     "test": "echo \"Running tests for version $npm_package_version...\"",
     "preversion": "yarn test",
-    "postversion": "git push --tags && yarn publish . --tag $npm_package_version && git push && echo \" version $npm_package_version was successfully released!\""
+    "postversion": "git push --tags && yarn publish --access public"
   },
   "repository": {
     "type": "git",
