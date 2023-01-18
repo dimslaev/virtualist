@@ -14,8 +14,8 @@ type Record = {
 };
 
 export const Example = () => {
-  const [pageIndex, setPageIndex] = useState(0);
   const [items, setItems] = useState<Record[]>([]);
+  const [pageIndex, setPageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const loadMore = () => {
@@ -27,19 +27,20 @@ export const Example = () => {
     });
   };
 
+  const onScroll = (params: onScrollCallbackParams) => {
+    if (params.inViewIndices.length === items.length) {
+      loadMore();
+    }
+  };
+
+  const { listRef, inViewIndices } = useVirtualist<Record>({
+    items,
+    onScroll,
+  });
+
   useEffect(() => {
     loadMore();
   }, []);
-
-  const onScroll = (params: onScrollCallbackParams) => {
-    console.log("scroll", params);
-  };
-
-  const { listRef, inViewItemIndices } = useVirtualist<Record>({
-    items,
-    loadMore,
-    onScroll,
-  });
 
   return (
     <main>
@@ -51,7 +52,7 @@ export const Example = () => {
             return (
               <ListItem
                 key={it.id}
-                inView={inViewItemIndices.includes(index)}
+                inView={inViewIndices.includes(index)}
                 data={it}
               />
             );
@@ -82,6 +83,7 @@ export const ListItem = ({
       style={{
         height: inView ? "auto" : "50px",
       }}
+      data-id={id}
     >
       <div
         className="list__item__content"
