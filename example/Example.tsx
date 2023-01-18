@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { useVirtualist } from "../src/useVirtualist";
 import { onScrollCallbackParams } from "../src/virtualist";
 import data from "./mock_data.json";
@@ -14,9 +14,9 @@ type Record = {
 };
 
 export const Example = () => {
-  const [items, setItems] = useState<Record[]>([]);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [items, setItems] = React.useState<Record[]>([]);
+  const [pageIndex, setPageIndex] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
 
   const loadMore = () => {
     setLoading(true);
@@ -38,7 +38,7 @@ export const Example = () => {
     onScroll,
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     loadMore();
   }, []);
 
@@ -52,7 +52,7 @@ export const Example = () => {
             <ListItem {...it} key={it.id} />
           ) : (
             <ListItemPlaceholder key={it.id} />
-          )
+          ),
         )}
       </ul>
     </main>
@@ -93,7 +93,7 @@ export const fetchData = (pageIndex: number, pageSize = 20) =>
   new Promise((resolve) => {
     setTimeout(() => {
       resolve(
-        data.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize)
+        data.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize),
       );
     }, 500);
   });

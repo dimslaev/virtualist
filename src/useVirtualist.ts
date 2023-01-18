@@ -34,9 +34,9 @@ export const useVirtualist = <Item>({
     const renderItems = () => {
       const newRenderedIndices = [...renderedIndices];
 
-      listItems.forEach((node, index) => {
+      listItems.forEach((item, index) => {
+        const node = item as HTMLElement;
         if (
-          // @ts-ignore
           node.getBoundingClientRect().top - renderOffset <= listRect.bottom &&
           !renderedIndices.includes(index)
         ) {
