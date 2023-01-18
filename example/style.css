@@ -1,0 +1,65 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #151c26;
+  color: #74838c;
+  font-family: sans-serif;
+}
+
+main {
+  max-width: 70%;
+  margin: 0 auto;
+  padding: 4rem 0;
+}
+
+h1 {
+  font-size: 1.15rem;
+  letter-spacing: 0.085rem;
+  text-transform: uppercase;
+}
+
+.list {
+  border: 1px solid #74838c;
+  padding: 0;
+  margin: 0;
+}
+
+.item + .item {
+  border-top: 1px solid #74838c;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+
+.item-col {
+  padding: 0 16px;
+  flex: 0 0 10%;
+  min-width: 10%;
+  max-width: 10%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-col.id {
+  flex: 0 0 7%;
+  min-width: 7%;
+  max-width: 7%;
+}
+
+.item-col.email {
+  flex: 0 0 20%;
+  min-width: 20%;
+  max-width: 20%;
+}
+
+.item-col.description {
+  flex-grow: 1;
+  max-width: unset;
+  white-space: unset;
+}

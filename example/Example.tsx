@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useVirtualist } from "../src/useVirtualist";
 import { onScrollCallbackParams } from "../src/virtualist";
 import data from "./mock_data.json";
-import "./style.scss";
+import "./style.css";
 
 type Record = {
   id: string;
@@ -45,20 +45,18 @@ export const Example = () => {
   return (
     <main>
       <h1>Virtualist</h1>
-      <div className="list-wrapper">
-        <p>Loading: {String(loading)}</p>
-        <ul className="list" ref={listRef}>
-          {items.map((it, index) => {
-            return (
-              <ListItem
-                key={it.id}
-                inView={inViewIndices.includes(index)}
-                data={it}
-              />
-            );
-          })}
-        </ul>
-      </div>
+      <p>Loading: {String(loading)}</p>
+      <ul className="list" ref={listRef}>
+        {items.map((it, index) => {
+          return (
+            <ListItem
+              key={it.id}
+              inView={inViewIndices.includes(index)}
+              data={it}
+            />
+          );
+        })}
+      </ul>
     </main>
   );
 };
@@ -79,32 +77,18 @@ export const ListItem = ({
 }) => {
   return (
     <li
-      className="list__item"
+      className="item"
       style={{
         height: inView ? "auto" : "50px",
       }}
-      data-id={id}
     >
-      <div
-        className="list__item__content"
-        style={{ display: inView ? "flex" : "none" }}
-      >
-        <span className="list__item__column list__item__column--id">{id}</span>
-        <span className="list__item__column list__item__column--first-name">
-          {firstName}
-        </span>
-        <span className="list__item__column list__item__column--last-name">
-          {lastName}
-        </span>
-        <span className="list__item__column list__item__column--email">
-          {email}
-        </span>
-        <span className="list__item__column list__item__column--gender">
-          {gender}
-        </span>
-        <span className="list__item__column list__item__column--description">
-          {description}
-        </span>
+      <div className="item-row" style={{ display: inView ? "flex" : "none" }}>
+        <span className="item-col id">{id}</span>
+        <span className="item-col first-name">{firstName}</span>
+        <span className="item-col last-name">{lastName}</span>
+        <span className="item-col email">{email}</span>
+        <span className="item-col gender">{gender}</span>
+        <span className="item-col description">{description}</span>
       </div>
     </li>
   );
