@@ -1,6 +1,6 @@
 {
   "name": "@dims/virtualist",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Simple, performant and cross-browser virtual list.",
   "tags": [
     "react",
@@ -22,7 +22,10 @@
   "scripts": {
     "start": "cd example && yarn start",
     "build": "rimraf dist && parcel build ./src/index.ts --no-source-maps",
-    "lint": "eslint src/**/*.ts example/**/*.tsx"
+    "lint": "eslint src/**/*.ts example/**/*.tsx",
+    "test": "echo \"Running tests for version $npm_package_version...\"",
+    "preversion": "yarn test",
+    "postversion": "git push --tags && yarn publish . --tag $npm_package_version && git push && echo \" version $npm_package_version was successfully released!\""
   },
   "repository": {
     "type": "git",
