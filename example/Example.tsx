@@ -1,6 +1,5 @@
 import React from "react";
-import { useVirtualist } from "../src/useVirtualist";
-import { onScrollCallbackParams } from "../src/virtualist";
+import { useVirtualist, onScrollCallbackParams } from "@dims/virtualist";
 import data from "./mock_data.json";
 import "./style.css";
 

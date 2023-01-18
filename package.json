@@ -3,20 +3,25 @@
   "version": "0.0.1",
   "description": "Simple, performant and cross-browser virtual list.",
   "tags": [
+    "react",
     "virtual list",
-    "infinite list",
     "contentVisibility",
     "react virtual list",
+    "virtual list",
     "react window",
-    "react list performance"
+    "infinite list",
+    "infinite loader",
+    "performance"
   ],
-  "source": "./src/lib/useVirtualist.js",
-  "main": "./dist/useVirtualist.js",
-  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "start": "parcel ./example/index.html",
-    "clean": "rm -rf dist && rm -rf .parcel-cache",
-    "build": "npm run clean && parcel build --no-source-maps",
+    "start": "cd example && yarn start",
+    "build": "rimraf dist && parcel build ./src/index.ts --no-source-maps",
     "lint": "eslint src/**/*.ts example/**/*.tsx"
   },
   "repository": {
@@ -27,6 +32,8 @@
   "license": "ISC",
   "homepage": "https://github.com/dimslaev/virtualist",
   "devDependencies": {
+    "@parcel/packager-ts": "2.8.2",
+    "@parcel/transformer-typescript-types": "2.8.2",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.10",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
