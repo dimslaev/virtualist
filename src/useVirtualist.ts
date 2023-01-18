@@ -1,5 +1,26 @@
 import { useEffect, useRef, useState } from "react";
-import { Options, Return, ScrollDirection } from "./virtualist";
+
+export type ScrollDirection = "up" | "down";
+
+export type onScrollCallbackParams = {
+  direction: ScrollDirection;
+  scrollTop: number;
+  renderedIndices: number[];
+  originalEvent: Event;
+};
+
+export interface Options<T> {
+  items: T[];
+  listHeight?: number;
+  onScroll?: (params: onScrollCallbackParams) => void;
+  throttle?: number;
+  renderOffset?: number;
+}
+
+export interface Return {
+  listRef: React.RefObject<HTMLUListElement>;
+  renderedIndices: number[];
+}
 
 export const useVirtualist = <Item>({
   items,
@@ -17,7 +38,6 @@ export const useVirtualist = <Item>({
 
   useEffect(() => {
     if (!listRef.current || !items.length) return;
-    console.log("items changed");
     const list = listRef.current;
     const listRect = list.getBoundingClientRect();
     const listItems = list.childNodes;
@@ -100,3 +120,5 @@ export const useVirtualist = <Item>({
     renderedIndices,
   };
 };
+
+export default useVirtualist;
