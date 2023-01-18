@@ -19,6 +19,7 @@
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "double"],
     "semi": ["error", "always"],
-    "react/jsx-uses-react": "error"
+    "react/jsx-uses-react": "error",
+    "no-console": "error"
   }
 }
