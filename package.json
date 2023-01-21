@@ -1,6 +1,6 @@
 {
   "name": "@dims/virtualist",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Simple, performant and cross-browser virtual list.",
   "tags": [
     "react",
