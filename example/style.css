@@ -6,6 +6,8 @@ body {
   background: #151c26;
   color: #74838c;
   font-family: sans-serif;
+  padding: 0;
+  margin: 0;
 }
 
 main {
