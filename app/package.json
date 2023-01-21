@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "link-pkg": "yarn link '@dims/virtualist'",
-    "start": "yarn link-pkg && ../node_modules/parcel/lib/bin.js index.html"
+    "start": "yarn link-pkg && ../node_modules/parcel/lib/bin.js index.html --dist-dir ../docs",
+    "clean": "rm -rf ../docs",
+    "build": "yarn clean && ../node_modules/parcel/lib/bin.js build index.html --dist-dir ../docs --public-url ./ --no-source-maps"
   },
   "browserslist": {
     "development": [
