@@ -73,7 +73,8 @@ export const useVirtualist = <Item>({
       const target = e.currentTarget as HTMLElement;
       const direction =
         target.scrollTop > lastScrollTop.current ? "down" : "up";
-      lastScrollTop.current = target.scrollTop;
+      // For Mobile or negative scrolling
+      lastScrollTop.current = target.scrollTop <= 0 ? 0 : target.scrollTop;
       return direction;
     };
 
