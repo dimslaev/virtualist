@@ -18,7 +18,7 @@ export interface Options<T> {
 }
 
 export interface Return {
-  listRef: React.RefObject<HTMLUListElement>;
+  listRef: React.RefObject<HTMLElement>;
   renderedIndices: number[];
 }
 
@@ -29,12 +29,20 @@ export const useVirtualist = <Item>({
   throttle = 50,
   renderOffset = 400,
 }: Options<Item>): Return => {
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLElement>(null);
   const scrollTimer = useRef<ReturnType<typeof setTimeout>>(0);
-  const isInitialLoad = useRef(true);
+  const isInitialRender = useRef(true);
   const lastScrollTop = useRef(0);
 
   const [renderedIndices, setRenderedIndices] = useState<number[]>([]);
+
+  const getScrollDirection = (e: Event): ScrollDirection => {
+    const target = e.currentTarget as HTMLElement;
+    const direction = target.scrollTop > lastScrollTop.current ? "down" : "up";
+    // For Mobile or negative scrolling
+    lastScrollTop.current = target.scrollTop <= 0 ? 0 : target.scrollTop;
+    return direction;
+  };
 
   useEffect(() => {
     if (!listRef.current || !items.length) return;
@@ -42,22 +50,14 @@ export const useVirtualist = <Item>({
     const listRect = list.getBoundingClientRect();
     const listItems = list.childNodes;
 
-    // Apply list styles
-    list.style.overflowX = "hidden";
-    list.style.overflowY = "auto";
-    list.style.margin = "0px";
-    list.style.padding = "0px";
-    if (typeof listHeight === "number") {
-      list.style.height = listHeight + "px";
-    }
-
     const renderItems = () => {
       const newRenderedIndices = [...renderedIndices];
 
       listItems.forEach((item, index) => {
         const node = item as HTMLElement;
+        const nodeRect = node.getBoundingClientRect();
         if (
-          node.getBoundingClientRect().top - renderOffset <= listRect.bottom &&
+          nodeRect.top - renderOffset <= listRect.bottom &&
           !renderedIndices.includes(index)
         ) {
           newRenderedIndices.push(index);
@@ -67,15 +67,6 @@ export const useVirtualist = <Item>({
       setRenderedIndices(newRenderedIndices);
 
       return newRenderedIndices;
-    };
-
-    const getScrollDirection = (e: Event): ScrollDirection => {
-      const target = e.currentTarget as HTMLElement;
-      const direction =
-        target.scrollTop > lastScrollTop.current ? "down" : "up";
-      // For Mobile or negative scrolling
-      lastScrollTop.current = target.scrollTop <= 0 ? 0 : target.scrollTop;
-      return direction;
     };
 
     const onScrollEnd = (originalEvent: Event, direction: ScrollDirection) => {
@@ -104,9 +95,19 @@ export const useVirtualist = <Item>({
       }, throttle);
     };
 
-    if (isInitialLoad.current) {
+    if (isInitialRender.current) {
+      // Apply list styles
+      list.style.overflowX = "hidden";
+      list.style.overflowY = "auto";
+      list.style.margin = "0px";
+      list.style.padding = "0px";
+      if (typeof listHeight === "number") {
+        list.style.height = listHeight + "px";
+      }
+
       renderItems();
-      isInitialLoad.current = false;
+
+      isInitialRender.current = false;
     }
 
     list.addEventListener("scroll", onScroll);

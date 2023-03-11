@@ -6,9 +6,6 @@ import "./style.css";
 type Record = {
   id: string;
   first_name: string;
-  last_name: string;
-  email: string;
-  gender: string;
   description: string;
 };
 
@@ -70,19 +67,13 @@ export const ListItemPlaceholder = () => (
 export const ListItem = ({
   id,
   first_name: firstName,
-  last_name: lastName,
-  email,
-  gender,
   description,
 }: Record) => {
   return (
     <li className="item">
       <span className="item-col id">{id}</span>
       <span className="item-col first-name">{firstName}</span>
-      <span className="item-col last-name">{lastName}</span>
-      <span className="item-col email">{email}</span>
-      <span className="item-col gender">{gender}</span>
-      <span className="item-col description">{description}</span>
+      <span className="item-col desc">{description}</span>
     </li>
   );
 };
